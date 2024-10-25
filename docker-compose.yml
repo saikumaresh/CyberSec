@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  healthcare-app:
+    build: ./healthcare_app  # Path to the healthcare app
+    ports:
+      - "3000:3000"          # Expose port for healthcare app
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=Sai@2020
+      - DB_NAME=healthcare
+    networks:
+      - app-network
+
+  dashboard:
+    build: ./dashboard       # Path to the dashboard
+    ports:
+      - "3001:3001"          # Expose port for dashboard
+    networks:
+      - app-network
+
+  kitsune:
+    build: ./kitsune         # Path to Kitsune (assuming manually cloned)
+    volumes:
+      - ./kitsune:/kitsune   # Mount the Kitsune directory
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: Sai@2020
+      MYSQL_DATABASE: healthcare
+    ports:
+      - "3307:3306"          # Expose MySQL port
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
